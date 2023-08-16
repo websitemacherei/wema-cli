@@ -41,6 +41,9 @@ elseif ($command -eq "update") {
   Remove-Item -Recurse -Force $scriptPath 
   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/websitemacherei/wema-cli/main/wema.ps1" -OutFile "$scriptPath"
 }
+elseif ($command -eq "Init") {
+  throw "Not yet implemented."
+}
 else {
   throw "Invalid action."
 }
