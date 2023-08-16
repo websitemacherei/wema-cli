@@ -36,6 +36,11 @@ if ($command -eq "fetch") {
 
   Remove-Item -Recurse -Force DATA_REPO_TEMP 
 }
+elseif ($command -eq "update") {
+  $scriptPath = $MyInvocation.MyCommand.Path
+  Remove-Item -Recurse -Force $scriptPath 
+  Invoke-WebRequest -Uri "https://raw.githubusercontent.com/websitemacherei/wema-cli/main/wema.ps1" -OutFile "$scriptPath"
+}
 else {
   throw "Invalid action."
 }
