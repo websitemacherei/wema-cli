@@ -42,10 +42,93 @@ elseif ($command -eq "update") {
   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/websitemacherei/wema-cli/main/wema.ps1" -OutFile "$scriptPath"
 }
 elseif ($command -eq "init") {
-  throw "Not yet implemented."
+  $dirName = Split-Path -Path (Get-Location) -Leaf
+  $hostBase = $dirName.split(".")[0]
+  # Get defaults for prompts
+  $hostLocalDefault = "$($hostBase).local"
+  $hostTestDefault = "$($hostBase).test.wema.work"
+  $hostProdDefault = $dirName 
+  $repoNameDefault = $dirName 
+  # Prompt user for hostnames and repo names
+  $hostLocal = Read-Host "Enter local hostname [$($hostLocalDefault)]"
+  if ($hostLocal -eq "") { $hostLocal = $hostLocalDefault }
+  $hostTest = Read-Host "Enter hostname for test instance [$($hostTestDefault)]"
+  if ($hostTest -eq "") { $hostTest = $hostTestDefault }
+  $hostProd = Read-Host "Enter hostname for production instance [$($hostProdDefault)]"
+  if ($hostProd -eq "") { $hostProd = $hostProdDefault }
+  $repoName = Read-Host "Enter name for GitHub repo [$($repoNameDefault)]"
+  if ($repoName -eq "") { $repoName = $repoNameDefault }
+
+  # Create code repo
+  $repoAddress = "git@github.com:websitemacherei/$($repoName).git"
+  $repoCreationRequestHeaders = @{
+    "Authorization"        = "Bearer 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"
+    "Accept"               = "application/vnd.github+json"
+    "X-GitHub-Api-Version" = "2022-11-28"
+  } 
+  $repoCreationRequestBody = @{
+    "name"    = $repoName
+    "private" = $true
+  } | ConvertTo-Json
+
+  Invoke-RestMethod -Uri "https://api.github.com/orgs/websitemacherei/repos" -Method 'Post' -Body $repoCreationRequestBody -Headers $repoCreationRequestHeaders | ConvertTo-HTML | Out-Null
+  # Create data repo
+  $dataRepoAddress = "git@github.com:websitemacherei/$($repoName)-data.git"
+  $dataRepoCreationRequestHeaders = @{
+    "Authorization"        = "Bearer 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"
+    "Accept"               = "application/vnd.github+json"
+    "X-GitHub-Api-Version" = "2022-11-28"
+  } 
+  $dataRepoCreationRequestBody = @{
+    "name"    = $dataRepoName
+    "private" = $true
+  } | ConvertTo-Json
+
+  Invoke-RestMethod -Uri "https://api.github.com/orgs/websitemacherei/repos" -Method 'Post' -Body $dataRepoCreationRequestBody -Headers $dataRepoCreationRequestHeaders | ConvertTo-HTML | Out-Null
+
+
+  # Initialize data repo
+  git clone git@github.com:websitemacherei/boilergrav-data.git $repoName-data
+  Set-Locatioo $repoName-data
+  Remove-Item -Recurse -Force .git
+  Get-ChildItem -Include .git -Recurse -Force | Remove-Item -Force -Recurse
+  git init --initial-branch=main
+  git remote add origin $dataRepoAddress
+  # Set code repo env variable
+((Get-Content -path .github/workflows/deploy_test.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test.yaml 
+((Get-Content -path .github/workflows/deploy_test_without_sync.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test_without_sync.yaml 
+((Get-Content -path .github/workflows/deploy_prod.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_prod.yaml 
+  git add .
+  git commit -m "#skipAction"
+  git checkout -b test
+  git push --all origin
+  Set-Location ..
+
+  # Initialize code repo
+  git clone git@github.com:websitemacherei/boilergrav.git $repoName
+  Set-Location $repoName
+  Remove-Item -Recurse -Force .git
+  Get-ChildItem -Include .git -Recurse -Force | Remove-Item -Force -Recurse
+  git init --initial-branch=main
+  git remote add origin $repoAddress
+  # Set data repo address in 
+((Get-Content -path .env -Raw) -replace '%HOST%', $hostLocal) | Set-Content -Path .env 
+((Get-Content -path .env.test -Raw) -replace '%HOST%', $hostTest) | Set-Content -Path .env.test
+((Get-Content -path .env.prod -Raw) -replace '%HOST%', $hostProd) | Set-Content -Path .env.prod 
+((Get-Content -path .\.git-sync-config\test.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\test.yaml 
+((Get-Content -path .\.git-sync-config\prod.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\prod.yaml 
+  git add .
+  git commit -m "Automated setup by WeMa-CLI"
+  git checkout -b test 
+  git checkout -b develop
+  git push --all origin
+
+  docker-compose up
+
+  Write-Host "Let's go"
 }
 elseif ($command -eq "version") {
-  Write-Host "1.0.0"
+  Write-Host "1.1.0"
 }
 else {
   throw "Invalid action."
