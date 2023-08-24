@@ -95,9 +95,9 @@ elseif ($command -eq "init") {
   git init --initial-branch=main
   git remote add origin $dataRepoAddress
   # Set code repo env variable
-((Get-Content -path .github/workflows/deploy_test.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test.yml 
-((Get-Content -path .github/workflows/deploy_test_without_sync.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test_without_sync.yml 
-((Get-Content -path .github/workflows/deploy_prod.yaml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_prod.yml 
+((Get-Content -path .github/workflows/deploy_test.yml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test.yml 
+((Get-Content -path .github/workflows/deploy_test_without_sync.yml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test_without_sync.yml 
+((Get-Content -path .github/workflows/deploy_prod.yml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_prod.yml 
   git add .
   git commit -m "#skipAction"
   git checkout -b test
