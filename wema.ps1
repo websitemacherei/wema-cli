@@ -89,7 +89,7 @@ elseif ($command -eq "init") {
 
   # Initialize data repo
   git clone git@github.com:websitemacherei/boilergrav-data.git $repoName-data
-  Set-Locatioo $repoName-data
+  Set-Location $repoName-data
   Remove-Item -Recurse -Force .git
   Get-ChildItem -Include .git -Recurse -Force | Remove-Item -Force -Recurse
   git init --initial-branch=main
