@@ -42,7 +42,7 @@ elseif ($command -eq "update") {
   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/websitemacherei/wema-cli/main/wema.ps1" -OutFile "$scriptPath"
 }
 elseif ($command -eq "init") {
-  $dirName = Split-Path -Path (Get-Location) -Leaf
+  $dirName = $args[1]
   $hostBase = $dirName.split(".")[0]
   # Get defaults for prompts
   $hostLocalDefault = "$($hostBase).local"
@@ -125,7 +125,7 @@ elseif ($command -eq "init") {
 
   docker-compose up
 
-  Write-Host "Let's go"
+  Write-Host "All done"
 }
 elseif ($command -eq "version") {
   Write-Host "1.1.0"
