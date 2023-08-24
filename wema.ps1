@@ -80,7 +80,7 @@ elseif ($command -eq "init") {
     "X-GitHub-Api-Version" = "2022-11-28"
   } 
   $dataRepoCreationRequestBody = @{
-    "name"    = $dataRepoName
+    "name"    = "$repoName-data"
     "private" = $true
   } | ConvertTo-Json
 
