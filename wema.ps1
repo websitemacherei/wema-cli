@@ -62,7 +62,7 @@ elseif ($command -eq "init") {
   # Create code repo
   $repoAddress = "git@github.com:websitemacherei/$($repoName).git"
   $repoCreationRequestHeaders = @{
-    "Authorization"        = "Bearer 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"
+    "Authorization"        = "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"
     "Accept"               = "application/vnd.github+json"
     "X-GitHub-Api-Version" = "2022-11-28"
   } 
@@ -75,7 +75,7 @@ elseif ($command -eq "init") {
   # Create data repo
   $dataRepoAddress = "git@github.com:websitemacherei/$($repoName)-data.git"
   $dataRepoCreationRequestHeaders = @{
-    "Authorization"        = "Bearer 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"
+    "Authorization"        = "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"
     "Accept"               = "application/vnd.github+json"
     "X-GitHub-Api-Version" = "2022-11-28"
   } 
