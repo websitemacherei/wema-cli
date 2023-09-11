@@ -127,6 +127,11 @@ elseif ($command -eq "init") {
 
   Write-Host "All done"
 }
+elseif ($command -eq "multisite") {
+  git clone git@github.com:websitemacherei/grav-plugin-websitemacherei_routing.git web/user/plugins/websitemacherei_routing
+  mv web/user/plugins/websitemacherei_routing/setup.php ./web/setup.php
+  Write-Host "Please add the setup.php as a docker volume and adjust the setup.php to your liking."
+}
 elseif ($command -eq "version") {
   Write-Host "1.1.0"
 }
