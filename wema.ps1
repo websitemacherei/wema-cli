@@ -103,6 +103,7 @@ elseif ($command -eq "init") {
   git checkout -b test
   git push --all origin
   Set-Location ..
+  Remove-Item -Recurse -Force $reponame-data 
 
   # Initialize code repo
   git clone git@github.com:websitemacherei/boilergrav.git $repoName
@@ -117,6 +118,10 @@ elseif ($command -eq "init") {
 ((Get-Content -path .env.prod -Raw) -replace '%HOST%', $hostProd) | Set-Content -Path .env.prod 
 ((Get-Content -path .\.git-sync-config\test.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\test.yaml 
 ((Get-Content -path .\.git-sync-config\prod.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\prod.yaml 
+((Get-Content -path .\web\setup.php -Raw) -replace '%LOCAL%', $hostLocal) | Set-Content -Path .\web\setup.php 
+((Get-Content -path .\web\setup.php -Raw) -replace '%TEST%', $hostTest) | Set-Content -Path .\web\setup.php 
+((Get-Content -path .\web\setup.php -Raw) -replace '%PROD%', $hostProd) | Set-Content -Path .\web\setup.php 
+((Get-Content -path .\web\setup.php -Raw) -replace '%PROJECT%', $hostBase) | Set-Content -Path .\web\setup.php 
   git add .
   git commit -m "Automated setup by WeMa-CLI"
   git checkout -b test 
@@ -133,7 +138,7 @@ elseif ($command -eq "multisite") {
   Write-Host "Please add the setup.php as a docker volume and adjust the setup.php to your liking."
 }
 elseif ($command -eq "version") {
-  Write-Host "1.1.0"
+  Write-Host "1.2.0"
 }
 else {
   throw "Invalid action."
