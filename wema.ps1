@@ -157,8 +157,8 @@ elseif ($command -eq "go-live") {
     git checkout develop
     $repoAddress = git ls-remote --get-url origin
     $repoAddress.replace('.git', '-data.git')
-    git clone $repoAddress
-    Set-Location $repoAddress
+    git clone $repoAddress DATA_TEMP
+    Set-Location DATA_TEMP 
     git fetch --all
     git checkout main
     Remove-Item -Force -Recurse .
@@ -167,7 +167,7 @@ elseif ($command -eq "go-live") {
     git commit -m "Copied test data to prod data"
     git push origin main
     Set-Location ..
-    Remove-Item -Recurse -Force repoAddress
+    Remove-Item -Recurse -Force DATA_TEMP 
     git checkout develop
     Write-Host "You may now run the workflow to deploy the production state."
   } else {
