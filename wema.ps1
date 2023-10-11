@@ -137,8 +137,46 @@ elseif ($command -eq "multisite") {
   mv web/user/plugins/websitemacherei_routing/setup.php ./web/setup.php
   Write-Host "Please add the setup.php as a docker volume and adjust the setup.php to your liking."
 }
+elseif ($command -eq "update-test") {
+  git push origin develop
+  git checkout test
+  git merge develop -m "Automatic merge performed by wema-cli"
+  git push origin test
+  git checkout develop
+}
+
+elseif ($command -eq "go-live") {
+  Write-Host "This action will override all code and data in production with disregard to the current production state."
+  $confirmation = Read-Host "Continue? (y/n)"
+  if ($confirmation -eq "y") {
+    Write-Host "Proceeding..."
+    git push origin test
+    git checkout main
+    git merge -s theirs test -m "Automatic merge performed by wema-cli"
+    git push origin main
+    git checkout develop
+    $repoAddress = git ls-remote --get-url origin
+    $repoAddress.replace('.git', '-data.git')
+    git clone $repoAddress
+    Set-Location $repoAddress
+    git fetch --all
+    git checkout main
+    Remove-Item -Force -Recurse .
+    git checkout test :
+    git add .
+    git commit -m "Copied test data to prod data"
+    git push origin main
+    Set-Location ..
+    Remove-Item -Recurse -Force repoAddress
+    git checkout develop
+    Write-Host "You may now run the workflow to deploy the production state."
+  } else {
+    Write-Host "Aborting..."
+  }
+}
+
 elseif ($command -eq "version") {
-  Write-Host "1.2.0"
+  Write-Host "1.3.0"
 }
 else {
   throw "Invalid action."
