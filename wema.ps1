@@ -161,7 +161,7 @@ elseif ($command -eq "go-live") {
     Set-Location DATA_TEMP 
     git fetch --all
     git checkout main
-    Remove-Item -Force -Recurse .
+    Remove-Item -Force -Recurse ./*
     git checkout test :
     git add .
     git commit -m "Copied test data to prod data"
