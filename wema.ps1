@@ -156,7 +156,7 @@ elseif ($command -eq "go-live") {
     git push origin main
     git checkout develop
     $repoAddress = git ls-remote --get-url origin
-    $repoAddress.replace('.git', '-data.git')
+    $repoAddress = $repoAddress.replace('.git', '-data.git')
     git clone $repoAddress DATA_TEMP
     Set-Location DATA_TEMP 
     git fetch --all
