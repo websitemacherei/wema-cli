@@ -152,7 +152,7 @@ elseif ($command -eq "go-live") {
     Write-Host "Proceeding..."
     git push origin test
     git checkout main
-    git merge -s theirs test -m "Automatic merge performed by wema-cli"
+    git merge test -m "Automatic merge performed by wema-cli"
     git push origin main
     git checkout develop
     $repoAddress = git ls-remote --get-url origin
@@ -161,7 +161,7 @@ elseif ($command -eq "go-live") {
     Set-Location DATA_TEMP 
     git fetch --all
     git checkout test 
-    git merge -s ours main 
+    git merge -s ours main -m "Automatic merge performed by wema-cli"
     git checkout main 
     git merge test 
     git push origin main
