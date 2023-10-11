@@ -160,12 +160,12 @@ elseif ($command -eq "go-live") {
     git clone $repoAddress DATA_TEMP
     Set-Location DATA_TEMP 
     git fetch --all
-    git checkout main
-    Remove-Item -Force -Recurse ./*
-    git checkout test :
-    git add .
-    git commit -m "Copied test data to prod data"
+    git checkout test 
+    git merge -s ours main 
+    git checkout main 
+    git merge test 
     git push origin main
+    git push origin test 
     Set-Location ..
     Remove-Item -Recurse -Force DATA_TEMP 
     git checkout develop
