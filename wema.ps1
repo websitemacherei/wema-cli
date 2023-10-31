@@ -175,7 +175,7 @@ elseif ($command -eq "go-live") {
   }
 }
 elseif ($command -eq "resettest") {
-  Write-Host "This action will override all code and data in production with disregard to the current production state."
+  Write-Host "This action will override all data on test if there is currently a test server"
   $confirmation = Read-Host "Continue? (y/n)"
   if ($confirmation -eq "y") {
     Write-Host "Proceeding..."
@@ -189,7 +189,7 @@ elseif ($command -eq "resettest") {
     Remove-Item -Recurse -Force data/*
     git add .
     git commit -m "#skipAction" 
-    git merge -m "Rest Test" main
+    git merge -m "Rest Test" -Xtheirs main
     git push origin test
     Set-Location ..
     Remove-Item -Recurse -Force DATA_TEMP 
