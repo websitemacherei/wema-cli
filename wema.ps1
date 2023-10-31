@@ -189,7 +189,11 @@ elseif ($command -eq "resettest") {
     Remove-Item -Recurse -Force data/*
     git add .
     git commit -m "#skipAction" 
-    git merge -m "Rest Test" -Xtheirs main
+    git checkout main -- config/
+    git checkout main -- pages/
+    git checkout main -- data/
+    git add .
+    git commit -m "Reset test" 
     git push origin test
     Set-Location ..
     Remove-Item -Recurse -Force DATA_TEMP 
@@ -199,7 +203,7 @@ elseif ($command -eq "resettest") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.0"
+  Write-Host "1.4.2"
 }
 else {
   throw "Invalid action."
