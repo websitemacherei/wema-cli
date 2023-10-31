@@ -174,9 +174,32 @@ elseif ($command -eq "go-live") {
     Write-Host "Aborting..."
   }
 }
+elseif ($command -eq "resettest") {
+  Write-Host "This action will override all code and data in production with disregard to the current production state."
+  $confirmation = Read-Host "Continue? (y/n)"
+  if ($confirmation -eq "y") {
+    Write-Host "Proceeding..."
+    $repoAddress = git ls-remote --get-url origin
+    $repoAddress = $repoAddress.replace('.git', '-data.git')
+    git clone $repoAddress DATA_TEMP
+    Set-Location DATA_TEMP 
+    git checkout test
+    Remove-Item -Recurse -Force config/* 
+    Remove-Item -Recurse -Force pages/* 
+    Remove-Item -Recurse -Force data/*
+    git add .
+    git commit -m "#skipAction" 
+    git merge -m "Rest Test" main
+    git push origin test
+    Set-Location ..
+    Remove-Item -Recurse -Force DATA_TEMP 
+  } else {
+    Write-Host "Aborting..."
+  }
+}
 
 elseif ($command -eq "version") {
-  Write-Host "1.3.0"
+  Write-Host "1.4.0"
 }
 else {
   throw "Invalid action."
