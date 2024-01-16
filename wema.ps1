@@ -216,7 +216,7 @@ elseif ($command -eq "help") {
   Write-Host "wema update-test: Merges develop into test and pushes the result to the remote test branch"
   Write-Host "wema go-live: Merges test into main and pushes the result to the remote main branch"
   Write-Host "wema reset-test: Resets the test environment to the state of the main branch"
-  Write-Host "wema version: Returns the version of the wema-cli script
+  Write-Host "wema version: Returns the version of the wema-cli script"
 }
 
 elseif ($command -eq "version") {
