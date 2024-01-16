@@ -209,6 +209,16 @@ elseif ($command -eq "reset-test") {
   }
 }
 
+elseif ($command -eq "help") {
+  Write-Host "wema init <project-name>: Initializes a new project with a code repo and a data repo"
+  Write-Host "wema update: Updates the wema-cli script to the latest version"
+  Write-Host "wema fetch <environment (test|main)>: Fetches pages and config from the data repo into the local dev environment"
+  Write-Host "wema update-test: Merges develop into test and pushes the result to the remote test branch"
+  Write-Host "wema go-live: Merges test into main and pushes the result to the remote main branch"
+  Write-Host "wema reset-test: Resets the test environment to the state of the main branch"
+  Write-Host "wema version: Returns the version of the wema-cli script
+}
+
 elseif ($command -eq "version") {
   Write-Host "1.4.4"
 }
