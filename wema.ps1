@@ -183,7 +183,7 @@ elseif ($command -eq "go-live") {
     Write-Host "Aborting..."
   }
 }
-elseif ($command -eq "resettest") {
+elseif ($command -eq "reset-test") {
   Write-Host "This action will override all data on test if there is currently a test server"
   $confirmation = Read-Host "Continue? (y/n)"
   if ($confirmation -eq "y") {
@@ -210,7 +210,7 @@ elseif ($command -eq "resettest") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.3"
+  Write-Host "1.4.4"
 }
 else {
   throw "Invalid action."
