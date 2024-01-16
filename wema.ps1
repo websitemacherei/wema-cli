@@ -33,6 +33,15 @@ if ($command -eq "fetch") {
   Move-Item -Path .\DATA_REPO_TEMP\pages -Destination .\web\user
   Remove-Item -Recurse -Force .\web\user\config
   Move-Item -Path .\DATA_REPO_TEMP\config -Destination .\web\user
+  # Loop over folders in .\DATA_REPO_TEMP\sites
+  $sites = Get-ChildItem -Path .\DATA_REPO_TEMP\sites -Directory
+  foreach ($site in $sites) {
+    $siteName = $site.Name
+    Remove-Item -Recurse -Force .\web\user\sites\$siteName\config
+    Remove-Item -Recurse -Force .\web\user\sites\$siteName\pages
+    Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\config -Destination .\web\user\sites\$siteName
+    Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\pages -Destination .\web\user\sites\$siteName
+  }
 
   Remove-Item -Recurse -Force DATA_REPO_TEMP 
 }
@@ -201,7 +210,7 @@ elseif ($command -eq "resettest") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.2"
+  Write-Host "1.4.3"
 }
 else {
   throw "Invalid action."
