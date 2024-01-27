@@ -222,7 +222,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.4"
+  Write-Host "1.4.5"
 }
 else {
   throw "Invalid action."
