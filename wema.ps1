@@ -37,8 +37,8 @@ if ($command -eq "fetch") {
   $sites = Get-ChildItem -Path .\DATA_REPO_TEMP\sites -Directory
   foreach ($site in $sites) {
     $siteName = $site.Name
-    Remove-Item -Recurse -Force .\web\user\sites\$siteName\config
-    Remove-Item -Recurse -Force .\web\user\sites\$siteName\pages
+    Remove-Item -Recurse -Force .\web\user\sites\$siteName\config -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force .\web\user\sites\$siteName\pages -ErrorAction SilentlyContinue
     Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\config -Destination .\web\user\sites\$siteName
     Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\pages -Destination .\web\user\sites\$siteName
   }
@@ -220,7 +220,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.4"
+  Write-Host "1.4.5"
 }
 else {
   throw "Invalid action."
