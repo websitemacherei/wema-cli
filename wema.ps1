@@ -173,13 +173,24 @@ elseif ($command -eq "go-live") {
     git checkout main
     Remove-Item -Recurse -Force config/* 
     Remove-Item -Recurse -Force pages/* 
-    Remove-Item -Recurse -Force data/*
+    # Remove-Item -Recurse -Force data/*
     git checkout test -- config/
     git checkout test -- pages/
-    git checkout test -- data/
+    # git checkout test -- data/
+    # Loop over folders in .\DATA_REPO_TEMP\sites
+    if (Test-Path -Path .\sites) {
+      $sites = Get-ChildItem -Path .\sites -Directory
+      foreach ($site in $sites) {
+	      $siteName = $site.Name
+        Remove-Item -Recurse -Force .\sites\$siteName\config -ErrorAction SilentlyContinue
+        Remove-Item -Recurse -Force .\sites\$siteName\pages -ErrorAction SilentlyContinue
+        git checkout test -- sites/$siteName/config/
+        git checkout test -- sites/$siteName/pages/
+      }
+    }
     git add .
-    git commit -m "Reset test" 
-    git push origin test
+    git commit -m "Update main from test" 
+    git push origin main 
     Set-Location ..
     git checkout develop
     Write-Host "You may now run the workflow to deploy the production state."
@@ -224,7 +235,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.6"
+  Write-Host "1.4.7"
 }
 else {
   throw "Invalid action."
