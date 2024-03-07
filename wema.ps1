@@ -170,15 +170,17 @@ elseif ($command -eq "go-live") {
     $repoAddress = $repoAddress.replace('.git', '-data.git')
     git clone $repoAddress DATA_TEMP
     Set-Location DATA_TEMP 
-    git fetch --all
-    git checkout test 
-    git merge -s ours main -m "Automatic merge performed by wema-cli"
-    git checkout main 
-    git merge test 
-    git push origin main
-    git push origin test 
+    git checkout main
+    Remove-Item -Recurse -Force config/* 
+    Remove-Item -Recurse -Force pages/* 
+    Remove-Item -Recurse -Force data/*
+    git checkout test -- config/
+    git checkout test -- pages/
+    git checkout test -- data/
+    git add .
+    git commit -m "Reset test" 
+    git push origin test
     Set-Location ..
-    Remove-Item -Recurse -Force DATA_TEMP 
     git checkout develop
     Write-Host "You may now run the workflow to deploy the production state."
   } else {
