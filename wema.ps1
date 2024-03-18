@@ -170,6 +170,7 @@ elseif ($command -eq "go-live") {
     $repoAddress = $repoAddress.replace('.git', '-data.git')
     git clone $repoAddress DATA_TEMP
     Set-Location DATA_TEMP 
+    git checkout test
     git checkout main
     Remove-Item -Recurse -Force config/* 
     Remove-Item -Recurse -Force pages/* 
@@ -235,7 +236,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.7"
+  Write-Host "1.4.8"
 }
 else {
   throw "Invalid action."
