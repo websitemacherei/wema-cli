@@ -129,7 +129,7 @@ elseif ($command -eq "init") {
   git remote add origin $repoAddress
   # Set data repo address in 
   # Project name is domain name where dots are replaced with underscores
-  $projectName = $hostBase -replace '\.', '_'
+  $projectName = $hostProd -replace '\.', '_'
   # project name dev has suffix -dev
   $projectNameDev = $projectName + "-dev"
   $projectNameTest = $projectName + "-test"
@@ -250,7 +250,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.9"
+  Write-Host "1.5.0"
 }
 else {
   throw "Invalid action."
