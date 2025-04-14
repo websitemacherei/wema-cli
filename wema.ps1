@@ -31,6 +31,8 @@ if ($command -eq "fetch") {
 
   Remove-Item -Recurse -Force .\web\user\pages
   Move-Item -Path .\DATA_REPO_TEMP\pages -Destination .\web\user
+  Remove-Item -Recurse -Force .\web\user\data
+  Move-Item -Path .\DATA_REPO_TEMP\data -Destination .\web\user
   Remove-Item -Recurse -Force .\web\user\config
   Move-Item -Path .\DATA_REPO_TEMP\config -Destination .\web\user
   # Loop over folders in .\DATA_REPO_TEMP\sites
@@ -40,8 +42,10 @@ if ($command -eq "fetch") {
 	  $siteName = $site.Name
     Remove-Item -Recurse -Force .\web\user\sites\$siteName\config -ErrorAction SilentlyContinue
     Remove-Item -Recurse -Force .\web\user\sites\$siteName\pages -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force .\web\user\sites\$siteName\data -ErrorAction SilentlyContinue
 	  Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\config -Destination .\web\user\sites\$siteName
 	  Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\pages -Destination .\web\user\sites\$siteName
+	  Move-Item -Path .\DATA_REPO_TEMP\sites\$siteName\data -Destination .\web\user\sites\$siteName
     }
   }
 
@@ -110,7 +114,7 @@ elseif ($command -eq "init") {
 ((Get-Content -path .github/workflows/deploy_test_without_sync.yml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_test_without_sync.yml 
 ((Get-Content -path .github/workflows/deploy_prod.yml -Raw) -replace '%CODE_REPO%', $repoName) | Set-Content -Path .github/workflows/deploy_prod.yml 
   git add .
-  git commit -m "#skipAction"
+  git commit -m "#skipaction"
   git checkout -b test
   git push --all origin
   Set-Location ..
@@ -124,8 +128,17 @@ elseif ($command -eq "init") {
   git init --initial-branch=main
   git remote add origin $repoAddress
   # Set data repo address in 
+  # Project name is domain name where dots are replaced with underscores
+  $projectName = $hostBase -replace '\.', '_'
+  # project name dev has suffix -dev
+  $projectNameDev = $projectName + "-dev"
+  $projectNameTest = $projectName + "-test"
+  $projectNameProd = $projectName + "-prod"
+((Get-Content -path .env -Raw) -replace '%PROJECT_NAME%', $projectNameDev) | Set-Content -Path .env 
 ((Get-Content -path .env -Raw) -replace '%HOST%', $hostLocal) | Set-Content -Path .env 
+((Get-Content -path .env.test -Raw) -replace '%PROJECT_NAME%', $projectNameTest) | Set-Content -Path .env.test
 ((Get-Content -path .env.test -Raw) -replace '%HOST%', $hostTest) | Set-Content -Path .env.test
+((Get-Content -path .env.prod -Raw) -replace '%PROJECT_NAME%', $projectNameProd) | Set-Content -Path .env.prod 
 ((Get-Content -path .env.prod -Raw) -replace '%HOST%', $hostProd) | Set-Content -Path .env.prod 
 ((Get-Content -path .\.git-sync-config\test.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\test.yaml 
 ((Get-Content -path .\.git-sync-config\prod.yaml -Raw) -replace '%DATAREPO%', $repoName) | Set-Content -Path .\.git-sync-config\prod.yaml 
@@ -133,6 +146,7 @@ elseif ($command -eq "init") {
 ((Get-Content -path .\web\setup.php -Raw) -replace '%TEST%', $hostTest) | Set-Content -Path .\web\setup.php 
 ((Get-Content -path .\web\setup.php -Raw) -replace '%PROD%', $hostProd) | Set-Content -Path .\web\setup.php 
 ((Get-Content -path .\web\setup.php -Raw) -replace '%PROJECT%', $hostBase) | Set-Content -Path .\web\setup.php 
+
   git add .
   git commit -m "Automated setup by WeMa-CLI"
   git checkout -b test 
@@ -236,7 +250,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.4.8"
+  Write-Host "1.4.9"
 }
 else {
   throw "Invalid action."
