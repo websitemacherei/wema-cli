@@ -188,10 +188,11 @@ elseif ($command -eq "go-live") {
     git checkout main
     Remove-Item -Recurse -Force config/* 
     Remove-Item -Recurse -Force pages/* 
+    Remove-Item -Recurse -Force data/theme/*
     # Remove-Item -Recurse -Force data/*
     git checkout test -- config/
     git checkout test -- pages/
-    # git checkout test -- data/
+    git checkout test -- data/theme
     # Loop over folders in .\DATA_REPO_TEMP\sites
     if (Test-Path -Path .\sites) {
       $sites = Get-ChildItem -Path .\sites -Directory
@@ -250,7 +251,7 @@ elseif ($command -eq "help") {
 }
 
 elseif ($command -eq "version") {
-  Write-Host "1.5.0"
+  Write-Host "1.5.1"
 }
 else {
   throw "Invalid action."
